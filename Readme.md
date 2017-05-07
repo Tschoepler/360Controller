@@ -14,6 +14,7 @@
   6. [Wired Xbox One Controllers](#wired-xbox-one-controllers)
   7. [Wireless Xbox One Controllers](#wireless-xbox-one-controllers)
   8. [Wireless Xbox One Controllers (Bluetooth)](#wireless-xbox-one-controllers-bluetooth)
+  9. [macOS stops booting after installation)](#macOS-stops-booting-after-installation)
 6. [Adding Third Party Controllers](#adding-third-party-controllers)
 7. [Developer Info](#developer-info)
   1. [Building](#building)
@@ -87,6 +88,11 @@ Xbox One controllers connected with the Wireless Adapter are currently not suppo
 
 ### Xbox One Controllers connected with Bluetooth
 The Xbox One controller works with macOS automatically when connected over Bluetooth. Only specific Xbox One controllers released after August 2016 have Bluetooth capability. See [Microsoft's support page](https://support.xbox.com/en-US/xbox-on-windows/accessories/connect-and-troubleshoot-xbox-one-bluetooth-issues-windows-10) for determining if your controller supports Bluetooth. Due to the fact that this controller works by default, it will not be supported by this driver. However, in order to get force feedback through the controller, you will need to install this driver. It will enable force feedback to the controller. Additionally, if you choose to plug this controller in via USB, the driver will support this configuration. Any problems with game compatibility in Bluetooth mode are completely out of our control and are up to you to solve in conjunction with the game developer.
+
+### macOS stops booting after installation
+On some systems installing the driver will prevent macOS from booting. It gets stuck when showing the apple logo and the preloader bar. Even safe doesn't work then. To fix this, boot into recovery mode and follow [this tutorial](https://www.justinsilver.com/technology/os-x-el-capitan-10-11-1-hanging-on-boot-fixed/) to remove any non-standard .kext-files (not installed by macOS) from /library/extensions/. But leave the x360 driver .kext-files untouched. 
+
+After removing those files, add them back to /library/extensions/ *one by one* until the system won't boot again. Then remove the .kext-file you put back last and you should be fine. If you rely on the software connected to the conflicting .kext-file and if this software relies on the .kext-file, then open an issue for that matter.
 
 ## Adding Third Party Controllers
 First, [disable signing requirements](#disabling-signing-requirements) so that you can run your custom build with your third party controller added. Then edit `360Controller/360Controller/Info.plist`. Add your controller following the pattern of pre-existing controllers by adding your vendor and product IDs to a new entry. After this, follow the information in the [building](#building) section, following the "If you don't have a signing certificate" path to build your new .kext. Then, place your shiny new `360Controller.kext` in to `/Library/Extensions` over the old one. You may need to take ownership of the driver in order for it to operate properly. You can do this with `sudo chown -R root:wheel /Library/Extensions/360Controller.kext`. Then, to make sure everything went according to plan, run `sudo kextutil /Library/Extensions/360Controller.kext`. This will load your kext into the OS and you should be able to use your controller. Once you reboot, your custom driver should be loaded automatically.
